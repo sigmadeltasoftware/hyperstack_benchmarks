@@ -1,0 +1,156 @@
+{
+    "metrics": {
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "auth_signup_success_rate": {
+            "passes": 286,
+            "fails": 0,
+            "thresholds": {
+                "rate>0.99": false
+            },
+            "value": 1
+        },
+        "http_req_blocked": {
+            "p(95)": 0.010047,
+            "avg": 0.01585278671328673,
+            "min": 0.002111,
+            "med": 0.0070695,
+            "max": 1.113898,
+            "p(90)": 0.0086165
+        },
+        "data_sent": {
+            "count": 125218,
+            "rate": 3129.494334266592
+        },
+        "http_req_duration": {
+            "avg": 115.60483358041961,
+            "min": 98.920405,
+            "med": 110.09520499999999,
+            "max": 186.882279,
+            "p(90)": 136.5648385,
+            "p(95)": 143.53613325
+        },
+        "http_req_waiting": {
+            "max": 186.579034,
+            "p(90)": 136.463377,
+            "p(95)": 143.45329425,
+            "avg": 115.47344185664345,
+            "min": 98.77683,
+            "med": 109.978211
+        },
+        "data_received": {
+            "count": 748192,
+            "rate": 18699.08978696026
+        },
+        "iterations": {
+            "count": 286,
+            "rate": 7.147817243529247
+        },
+        "http_req_connecting": {
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.0045090419580419575,
+            "min": 0,
+            "med": 0,
+            "max": 0.513006
+        },
+        "vus": {
+            "value": 1,
+            "min": 0,
+            "max": 5
+        },
+        "auth_signup_latency_ms": {
+            "p(90)": 136.5648385,
+            "p(95)": 143.53613325,
+            "avg": 115.60483358041961,
+            "min": 98.920405,
+            "med": 110.09520499999999,
+            "max": 186.882279,
+            "thresholds": {
+                "p(95)<15000": false
+            }
+        },
+        "http_reqs": {
+            "count": 286,
+            "rate": 7.147817243529247
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 286,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "vus_max": {
+            "value": 5,
+            "min": 5,
+            "max": 5
+        },
+        "http_req_receiving": {
+            "p(90)": 0.14136549999999998,
+            "p(95)": 0.18580649999999999,
+            "avg": 0.09992187062937065,
+            "min": 0.014196,
+            "med": 0.0879895,
+            "max": 0.679832
+        },
+        "http_req_duration{expected_response:true}": {
+            "avg": 115.60483358041961,
+            "min": 98.920405,
+            "med": 110.09520499999999,
+            "max": 186.882279,
+            "p(90)": 136.5648385,
+            "p(95)": 143.53613325
+        },
+        "http_req_sending": {
+            "max": 0.193502,
+            "p(90)": 0.044547500000000004,
+            "p(95)": 0.059824249999999995,
+            "avg": 0.03146985314685313,
+            "min": 0.007086,
+            "med": 0.0266845
+        },
+        "checks": {
+            "passes": 572,
+            "fails": 0,
+            "value": 1
+        },
+        "iteration_duration": {
+            "avg": 616.6528193111889,
+            "min": 599.978917,
+            "med": 611.354542,
+            "max": 688.73524,
+            "p(90)": 637.203939,
+            "p(95)": 644.26070625
+        }
+    },
+    "root_group": {
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "status 200": {
+                    "path": "::status 200",
+                    "id": "fad9fa412b86fcb03bee97c80dcd61f1",
+                    "passes": 286,
+                    "fails": 0,
+                    "name": "status 200"
+                },
+                "user.id present": {
+                    "name": "user.id present",
+                    "path": "::user.id present",
+                    "id": "0fb08cd9e34258cf608b6400bd265a60",
+                    "passes": 286,
+                    "fails": 0
+                }
+            },
+        "name": ""
+    }
+}

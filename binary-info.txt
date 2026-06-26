@@ -1,0 +1,14 @@
+HyperStack benchmark binary
+===========================
+version:      v1.2.1
+target:       x86_64-apple-darwin (Mach-O 64-bit, Intel)
+built:        on the benchmark server (native release build)
+size_bytes:   5188408
+sha256:       da927c2e15d58b2ed67c0c79a951b9aa4ac08de8017c155de31f27f3ee92a51c
+
+NOTE: This is an x86_64-apple-darwin (Intel Mac) build. It will NOT run on
+Apple Silicon (arm64) or Linux without a rebuild from source. The benchmark
+server is an Intel Mac running macOS with OrbStack providing Docker.
+
+The binary requires a DATABASE_URL and a set of env vars to boot; the harness
+(harness/targets/framing-*.sh) sets all of these. It has no --version flag.

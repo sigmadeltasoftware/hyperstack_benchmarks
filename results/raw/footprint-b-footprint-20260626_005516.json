@@ -1,0 +1,104 @@
+{
+  "run_id": "footprint-20260626_005516",
+  "timestamp": "2026-06-25T22:55:16Z",
+  "framing": "b",
+  "method": {
+    "hs_rss": "ps -o rss= -p <pid> on macOS host (KB->MB) — virtual-memory RSS, excludes page cache",
+    "sb_rss": "docker stats --no-stream sum over containers (cgroup memory.usage, includes page cache)",
+    "rss_asymmetry": "cgroup memory.usage (SB) tends to run higher than ps RSS (HS) — favours HS. See FAIRNESS.md §F3.",
+    "hs_coldstart": "exec_to_ready_http200",
+    "sb_coldstart": "docker_restart_kong_only_conservative_lower_bound_timeout",
+    "sb_coldstart_note": "Kong-restart only — other 9 containers remain warm. CONSERVATIVE LOWER BOUND. Full stack cold-start: 30-120s. See FAIRNESS.md §F2.",
+    "note": "API-layer footprint excludes Postgres. Both HS and SB require a pg instance. Report shows API separately + Postgres separately."
+  },
+  "hyperstack": {
+    "api_layer": {
+      "type": "single_binary",
+      "idle_rss_mb": 6.3,
+      "load_rss_mb": "12.4",
+      "binary_size_mb": 4.94,
+      "process_count": 1,
+      "coldstart_ms": "756",
+      "coldstart_method": "exec_to_ready_http200",
+      "coldstart_note": "Full API-layer cold-start: binary exec to first /ready HTTP 200"
+    },
+    "postgres": {
+      "container": "bench_hs_pg_b",
+      "idle_rss_mb": 32,
+      "image": "postgres:17"
+    }
+  },
+  "supabase": {
+    "api_layer": {
+      "type": "multi_container",
+      "container_count_total": 10,
+      "container_count_minimal_prod": 5,
+      "container_count_dev_extras": 5,
+      "idle_rss_minimal_prod_mb": 758.6,
+      "idle_rss_dev_extras_mb": 1399.4,
+      "idle_rss_full_stack_mb": 2158,
+      "load_rss_total_mb": "2812.0",
+      "image_size_total_mb": 3532.5,
+      "coldstart_ms": "timeout",
+      "coldstart_method": "docker_restart_kong_only_conservative_lower_bound_timeout",
+      "coldstart_note": "Kong-restart only (9 containers warm) — CONSERVATIVE LOWER BOUND; full stack cold-start 30-120s",
+      "minimal_prod_containers": [
+        "supabase_kong_sb-bench",
+        "supabase_auth_sb-bench",
+        "supabase_rest_sb-bench",
+        "supabase_realtime_sb-bench",
+        "supabase_storage_sb-bench"
+      ],
+      "dev_extra_containers": [
+        "supabase_studio_sb-bench",
+        "supabase_pg_meta_sb-bench",
+        "supabase_vector_sb-bench",
+        "supabase_analytics_sb-bench",
+        "supabase_inbucket_sb-bench"
+      ],
+      "per_container_idle_rss_mb": {
+        "supabase_kong_sb-bench": 95.8,
+        "supabase_auth_sb-bench": 15.3,
+        "supabase_rest_sb-bench": 186.6,
+        "supabase_realtime_sb-bench": 287.1,
+        "supabase_storage_sb-bench": 173.8,
+        "supabase_studio_sb-bench": 194.1,
+        "supabase_pg_meta_sb-bench": 70.9,
+        "supabase_vector_sb-bench": 181,
+        "supabase_analytics_sb-bench": 943.8,
+        "supabase_inbucket_sb-bench": 9.6
+      },
+      "images": {
+        "public.ecr.aws/supabase/kong:2.8.1": 132.8,
+        "public.ecr.aws/supabase/gotrue:v2.188.1": 50,
+        "public.ecr.aws/supabase/postgrest:v14.8": 20,
+        "public.ecr.aws/supabase/realtime:v2.82.0": 411.9,
+        "public.ecr.aws/supabase/storage-api:v1.48.28": 752.3,
+        "public.ecr.aws/supabase/studio:2026.04.08-sha-205cbe7": 1103.1,
+        "public.ecr.aws/supabase/postgres-meta:v0.96.4": 337.3,
+        "public.ecr.aws/supabase/vector:0.53.0-alpine": 143.1,
+        "public.ecr.aws/supabase/logflare:1.37.1": 554,
+        "public.ecr.aws/supabase/mailpit:v1.22.3": 28
+      }
+    },
+    "postgres": {
+      "container": "supabase_db_sb-bench",
+      "idle_rss_mb": 256
+    }
+  },
+  "ratios": {
+    "idle_rss_minimal_prod": "120x (SB minimal-prod / HS)",
+    "idle_rss_full_stack": "342x (SB full dev stack / HS)",
+    "honest_headline": "minimal-prod ratio (skeptics who do not run Studio/analytics in prod are right to use this)",
+    "full_stack_for_completeness": "full dev-stack ratio includes dev-only containers; reported for completeness not as headline"
+  },
+  "fairness_note": [
+    "API-layer comparison: HyperStack binary vs Supabase API containers.",
+    "minimal-prod = Kong + GoTrue + PostgREST + Realtime + Storage (5 containers needed for production API traffic).",
+    "dev-extras = Studio + pg_meta + Vector + Analytics/Logflare + Inbucket (dev tooling, not required in production).",
+    "Postgres is NOT counted in either API-layer figure. Both need a pg instance.",
+    "HyperStack folds all API-layer functionality into a single binary (~3.9 MB).",
+    "RSS accounting: HS uses ps (macOS, excludes page cache); SB uses docker stats cgroup memory.usage (includes page cache). Different units — favours HS. See FAIRNESS.md §F3.",
+    "Cold-start: HS = single binary exec to first /ready 200 (FULL cold-start). SB = docker restart Kong only (CONSERVATIVE LOWER BOUND; full stack 30-120s). See FAIRNESS.md §F2."
+  ]
+}

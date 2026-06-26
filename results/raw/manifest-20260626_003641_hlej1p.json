@@ -1,0 +1,99 @@
+{
+  "runid": "20260626_003641_hlej1p",
+  "timestamp": "2026-06-25T22:36:41Z",
+  "created_at": "2026-06-25T22:50:42.090Z",
+  "framing": "b",
+  "fixture": {
+    "k": 10,
+    "r": 100,
+    "s": 5
+  },
+  "host": {
+    "cpu_count": 32,
+    "ram_bytes": 103079215104
+  },
+  "postgres_version": "HS: ERROR: Command failed: /opt/homebrew/opt/libpq/bin/psql \"host=localhost port=54332 user=postgres dbname=bench_hs_b\" -tAc \"SELECT version()\" | SB: ERROR: Command failed: /opt/homebrew/opt/libpq/bin/psql \"host=localhost port=54322 user=postgres dbname=postgres\" -tAc \"SELECT version()\"",
+  "hyperstack_version": "1.2.1",
+  "supabase_containers": {
+    "supabase_kong_SDTool": {
+      "image": "not-found",
+      "id": "not-found"
+    },
+    "supabase_auth_SDTool": {
+      "image": "not-found",
+      "id": "not-found"
+    },
+    "supabase_rest_SDTool": {
+      "image": "not-found",
+      "id": "not-found"
+    },
+    "supabase_realtime_SDTool": {
+      "image": "not-found",
+      "id": "not-found"
+    },
+    "supabase_storage_SDTool": {
+      "image": "not-found",
+      "id": "not-found"
+    },
+    "supabase_db_SDTool": {
+      "image": "not-found",
+      "id": "not-found"
+    }
+  },
+  "k6_image": "grafana/k6",
+  "env": {
+    "hs_base_url": "http://127.0.0.1:52355",
+    "hs_pg_port": "54332",
+    "sb_rest_url_k6": "http://supabase_kong_sb-bench:8000/rest/v1",
+    "sb_auth_url_k6": "http://supabase_kong_sb-bench:8000/auth/v1",
+    "hs_db": "bench_hs_b",
+    "sb_db": "postgres"
+  },
+  "pg_settings": {
+    "hyperstack": "ERROR: ERROR: Command failed: /opt/homebrew/opt/libpq/bin/psql \"host=localhost port=54332 user=postgres dbname=bench_hs_b\" -tAc \"SELECT json_agg(row_to_json(t)) FROM (SELECT name,setting FROM pg_settings WHERE name IN ('shared_buffers','work_mem','max_connections','shared_preload_libraries','session_preload_libraries') ORDER BY name) t\"",
+    "supabase": "ERROR: ERROR: Command failed: /opt/homebrew/opt/libpq/bin/psql \"host=localhost port=54322 user=postgres dbname=postgres\" -tAc \"SELECT json_agg(row_to_json(t)) FROM (SELECT name,setting FROM pg_settings WHERE name IN ('shared_buffers','work_mem','max_connections','shared_preload_libraries','session_preload_libraries') ORDER BY name) t\""
+  },
+  "fairness": {
+    "engine_identity": {
+      "framing_a_controls": "gateway_overhead_only",
+      "note": "NOT identical pg engine — separate instances, different builds and shared_preload_libraries",
+      "hyperstack_pg": "vanilla postgres:17.10 (Docker Hub postgres:17, Debian)",
+      "supabase_pg": "public.ecr.aws/supabase/postgres:17.6.1.106 (Supabase fork)",
+      "shared_instance_impossible_reason": "Cluster-wide role-namespace collision: authenticator/anon/authenticated/service_role are reserved by supautils; ALTER ROLE authenticator PASSWORD would break PostgREST live pool."
+    },
+    "password_hash_algorithms": {
+      "hyperstack": {
+        "algorithm": "argon2id",
+        "crate": "argon2@0.5",
+        "m_cost_kib": 19456,
+        "m_cost_mb_approx": 19,
+        "t_cost_iterations": 2,
+        "parallelism": 1,
+        "note": "memory-hard KDF; CPU + RAM intensive"
+      },
+      "supabase_gotrue": {
+        "algorithm": "bcrypt",
+        "version": "v2.188.1",
+        "cost": 10,
+        "note": "CPU-only KDF; no large memory requirement; default GoTrue cost"
+      },
+      "comparability": "NOT_COMPARABLE — different algorithms with different CPU+memory profiles",
+      "caveat": "Auth scenario (Task 3) latency difference reflects algorithm choice, not solely implementation quality"
+    },
+    "network_topology": {
+      "k6_to_hyperstack": "container -> host.docker.internal -> host binary (extra hop)",
+      "k6_to_supabase": "container -> container on supabase_network_SDTool (direct)",
+      "asymmetry_penalizes": "HyperStack",
+      "hyperstack_latency_interpretation": "conservative lower bound (extra hop included)",
+      "containerization_status": "not_attempted — cross not available; Dockerfile build deferred"
+    },
+    "connection_pools": {
+      "hyperstack_authn_pool": 16,
+      "hyperstack_admin_pool": 8,
+      "postgrest_pool": "default=10 (PGRST_DB_POOL not set)",
+      "gotrue_pool": "uncapped (Go database/sql defaults)",
+      "equalized": false,
+      "note": "Pool sizes not equalized; see FAIRNESS.md §I2"
+    }
+  }
+}

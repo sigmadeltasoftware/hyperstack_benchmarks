@@ -1,0 +1,58 @@
+{
+  "target": "supabase",
+  "mode": "fanout",
+  "protocol": "phoenix-supabase-js",
+  "params": {
+    "m": 5,
+    "d": 20,
+    "levels": [
+      5,
+      10,
+      25,
+      50
+    ]
+  },
+  "results": [
+    {
+      "n": 5,
+      "p50": 248,
+      "p95": 496,
+      "p99": 504,
+      "total_expected": 500,
+      "total_received": 500,
+      "drop_rate": 0,
+      "ceiling": false
+    },
+    {
+      "n": 10,
+      "p50": 248,
+      "p95": 480,
+      "p99": 507,
+      "total_expected": 1000,
+      "total_received": 1000,
+      "drop_rate": 0,
+      "ceiling": false
+    },
+    {
+      "n": 25,
+      "p50": 276,
+      "p95": 506,
+      "p99": 523,
+      "total_expected": 2500,
+      "total_received": 2500,
+      "drop_rate": 0,
+      "ceiling": false
+    },
+    {
+      "n": 50,
+      "p50": 260,
+      "p95": 505,
+      "p99": 514,
+      "total_expected": 5000,
+      "total_received": 3450,
+      "drop_rate": 0.31,
+      "ceiling": true
+    }
+  ],
+  "max_sustainable_n": 25
+}

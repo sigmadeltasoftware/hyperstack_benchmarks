@@ -1,0 +1,29 @@
+{
+  "target": "hyperstack",
+  "mode": "bench",
+  "protocol": "phoenix-supabase-js",
+  "params": {
+    "n": 10,
+    "m": 5,
+    "d": 20,
+    "runs": 1
+  },
+  "runs": [
+    {
+      "run": 1,
+      "p50": 10,
+      "p95": 34,
+      "p99": 40,
+      "total_expected": 1000,
+      "total_received": 1000,
+      "drop_rate": 0,
+      "subscribers_ok": 10
+    }
+  ],
+  "summary": {
+    "p50_median": 10,
+    "p95_median": 34,
+    "p99_median": 40,
+    "avg_drop_rate": 0
+  }
+}

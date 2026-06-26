@@ -1,0 +1,156 @@
+{
+    "metrics": {
+        "http_req_duration{expected_response:true}": {
+            "med": 102.784047,
+            "max": 167.352814,
+            "p(90)": 122.62682769999999,
+            "p(95)": 125.33583564999999,
+            "avg": 105.56863973630146,
+            "min": 89.673862
+        },
+        "data_sent": {
+            "count": 124976,
+            "rate": 3077.957305345378
+        },
+        "iteration_duration": {
+            "avg": 606.6805348664378,
+            "min": 591.174676,
+            "med": 603.8951225,
+            "max": 669.198057,
+            "p(90)": 623.9741181,
+            "p(95)": 626.6027267
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 292,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "http_req_waiting": {
+            "max": 167.155328,
+            "p(90)": 122.4611965,
+            "p(95)": 125.08783575,
+            "avg": 105.36980264041094,
+            "min": 89.552619,
+            "med": 102.6602705
+        },
+        "data_received": {
+            "count": 752913,
+            "rate": 18543.032811415826
+        },
+        "http_req_receiving": {
+            "avg": 0.16244385616438367,
+            "min": 0.025692,
+            "med": 0.119095,
+            "max": 1.351644,
+            "p(90)": 0.2764324,
+            "p(95)": 0.34190085
+        },
+        "http_req_connecting": {
+            "avg": 0.0031128013698630136,
+            "min": 0,
+            "med": 0,
+            "max": 0.266606,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "iterations": {
+            "count": 292,
+            "rate": 7.191489031180788
+        },
+        "vus_max": {
+            "min": 5,
+            "max": 5,
+            "value": 5
+        },
+        "http_req_blocked": {
+            "avg": 0.01885938013698629,
+            "min": 0.002312,
+            "med": 0.0068395,
+            "max": 1.53468,
+            "p(90)": 0.008801000000000005,
+            "p(95)": 0.016287599999999982
+        },
+        "checks": {
+            "passes": 584,
+            "fails": 0,
+            "value": 1
+        },
+        "auth_signin_latency_ms": {
+            "avg": 105.56863973630146,
+            "min": 89.673862,
+            "med": 102.784047,
+            "max": 167.352814,
+            "p(90)": 122.62682769999999,
+            "p(95)": 125.33583564999999,
+            "thresholds": {
+                "p(95)<10000": false
+            }
+        },
+        "http_req_duration": {
+            "p(90)": 122.62682769999999,
+            "p(95)": 125.33583564999999,
+            "avg": 105.56863973630146,
+            "min": 89.673862,
+            "med": 102.784047,
+            "max": 167.352814
+        },
+        "http_req_sending": {
+            "min": 0.010806,
+            "med": 0.0291775,
+            "max": 0.260305,
+            "p(90)": 0.0527984,
+            "p(95)": 0.06388689999999998,
+            "avg": 0.03639323972602741
+        },
+        "auth_signin_success_rate": {
+            "passes": 292,
+            "fails": 0,
+            "thresholds": {
+                "rate>0.99": false
+            },
+            "value": 1
+        },
+        "http_reqs": {
+            "count": 292,
+            "rate": 7.191489031180788
+        },
+        "vus": {
+            "value": 1,
+            "min": 0,
+            "max": 5
+        },
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        }
+    },
+    "root_group": {
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "status 200": {
+                    "name": "status 200",
+                    "path": "::status 200",
+                    "id": "fad9fa412b86fcb03bee97c80dcd61f1",
+                    "passes": 292,
+                    "fails": 0
+                },
+                "access_token present": {
+                    "name": "access_token present",
+                    "path": "::access_token present",
+                    "id": "e7169eb8030ab7cf928cbeede2caae48",
+                    "passes": 292,
+                    "fails": 0
+                }
+            },
+        "name": "",
+        "path": ""
+    }
+}

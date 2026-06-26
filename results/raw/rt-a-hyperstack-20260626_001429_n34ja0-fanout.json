@@ -1,0 +1,58 @@
+{
+  "target": "hyperstack",
+  "mode": "fanout",
+  "protocol": "phoenix-supabase-js",
+  "params": {
+    "m": 5,
+    "d": 20,
+    "levels": [
+      5,
+      10,
+      25,
+      50
+    ]
+  },
+  "results": [
+    {
+      "n": 5,
+      "p50": 11,
+      "p95": 33,
+      "p99": 36,
+      "total_expected": 500,
+      "total_received": 500,
+      "drop_rate": 0,
+      "ceiling": false
+    },
+    {
+      "n": 10,
+      "p50": 12,
+      "p95": 35,
+      "p99": 37,
+      "total_expected": 1000,
+      "total_received": 1000,
+      "drop_rate": 0,
+      "ceiling": false
+    },
+    {
+      "n": 25,
+      "p50": 15,
+      "p95": 37,
+      "p99": 41,
+      "total_expected": 2500,
+      "total_received": 2500,
+      "drop_rate": 0,
+      "ceiling": false
+    },
+    {
+      "n": 50,
+      "p50": 21,
+      "p95": 46,
+      "p99": 52,
+      "total_expected": 5000,
+      "total_received": 5000,
+      "drop_rate": 0,
+      "ceiling": false
+    }
+  ],
+  "max_sustainable_n": 50
+}
