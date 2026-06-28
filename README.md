@@ -27,6 +27,7 @@ both framings, and every confound: `RESULTS.md` / `FAIRNESS.md`.)
 | Storage throughput (req/s) | 415–418 | 191–237 | **HS ~1.8×** |
 | Storage reliability (isolated) | 5/5 pass | 0–1/5 pass | **HS** (SB upload saturates) |
 | Idle RSS (minimal-prod) | 6.4 MB | 1,020 MB | **HS ~159×** smaller |
+| Under-load RSS | 12.4 MB | 2,812 MB (full stack) | **HS ~227×** smaller |
 | On-disk | 4.94 MB binary | 3,532 MB images | **HS ~715×** smaller |
 
 **Two corrections vs earlier drafts** (see the correction notice in `RESULTS.md`):

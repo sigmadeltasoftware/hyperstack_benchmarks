@@ -297,6 +297,7 @@ API-layer footprint (Postgres excluded — both need a Postgres). See FAIRNESS.m
 | Idle RSS (framing A) | 6.4 MB | 1,020 MB | 2,428 MB |
 | Idle RSS (framing B) | 6.3 MB | 759 MB | 2,158 MB |
 | Under-load RSS (A) | 12.3 MB | — | 2,440 MB |
+| Under-load RSS (B) | 12.4 MB | — | 2,812 MB |
 | Binary / image total | 4.94 MB | — | 3,532 MB |
 | Cold-start (A) | 602 ms (full) | timeout (Kong-only, LB) | — |
 | Postgres idle RSS | 39.9 MB (postgres:17) | — | 247 MB (SB pg) |
