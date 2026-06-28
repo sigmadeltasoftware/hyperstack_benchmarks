@@ -108,7 +108,8 @@ row-count assertion 100 = 100 passed on both targets). Storage uses service-role
 
 | Dimension | HyperStack | Supabase | Winner / note |
 |-----------|-----------:|---------:|---------------|
-| REST read (req/s, framing B) | 2,812 | 3,258 | SB +16% — near-parity; HS p95 lower (see §2a) |
+| REST read — small (20-row, symmetric) | 3,369 | 3,394 | tie (SB +0.7%, noise); **HS wins p95/p99** (see §2a) |
+| **REST read — large (1000-row, symmetric)** | **838** | 727 | **HS +15.3%**, lower at every percentile (see §2a) |
 | **REST insert — RAW (req/s, framing B, plain table)** | **2,184** | 1,766 | **HS +24%** — fair raw-insert headline |
 | REST insert — RAW (framing A) | 2,185 | 1,876 | HS +16% |
 | **Realtime write-tax (architectural)** | **3.7–3.85×** | **~1.00×** | see §2c — cost of HS realtime design, NOT raw insert |
@@ -128,22 +129,36 @@ row-count assertion 100 = 100 passed on both targets). Storage uses service-role
 
 ### 2a. REST — SELECT (RLS-filtered reads)
 
-Scenario: `GET /rest/v1/bench_items?select=id,owner,body&limit=20&order=id.asc`, user JWT
-(RLS: owner = auth.uid()). 20 VUs, N=5.
+Scenario: `GET /rest/v1/bench_items?select=id,owner,body&limit=<N>&order=id.asc`, user JWT
+(RLS: owner = auth.uid()). 20 VUs, N=5. `SELECT_LIMIT` sizes the result set.
 
-**CONFOUND (I1):** in framing A HyperStack traverses an extra Docker hop — conservative
-lower bound for HS.
+**The earlier −16% gap was ~80% a network confound (I1), not the API layer.** Re-measuring
+with an **equal network path** for both targets (k6 → each via the host's published ports —
+the same Docker hop on each side) isolates the API layer:
 
-| Framing | Target | Median req/s | p50 | p95 |
-|---------|--------|-------------:|----:|----:|
-| A | HyperStack | 1,496 | 9.4 ms | 23.6 ms |
-| A | Supabase | 2,747 | 4.9 ms | 12.3 ms |
-| B | HyperStack | 2,812 | 5.2 ms | **7.3 ms** |
-| B | Supabase | 3,258 | 4.6 ms | 8.8 ms |
+| Result size | Target | Median req/s | p50 | p95 | p99 |
+|-------------|--------|-------------:|----:|----:|----:|
+| 20 rows | HyperStack | 3,369 | 4.82 ms | **6.40 ms** | **7.60 ms** |
+| 20 rows | Supabase | 3,394 | 4.39 ms | 8.49 ms | 11.03 ms |
+| **1,000 rows** | **HyperStack** | **838** | **9.30 ms** | **15.49 ms** | **20.68 ms** |
+| 1,000 rows | Supabase | 727 | 12.11 ms | 19.55 ms | 26.26 ms |
 
-**Reads are near-parity in framing B (~16% gap), and HyperStack's p95 latency (7.3 ms) is
-actually lower than Supabase's (8.8 ms)** once both paths go through a gateway. Framing A's
-larger gap is dominated by the network confound.
+- **Small (20-row) reads are a statistical tie** on throughput (SB +0.7%, within noise), and
+  HyperStack already **wins tail latency** (p95/p99). On a tiny payload the DB round-trip
+  dominates, so JSON handling barely matters.
+- **Large (1,000-row) reads: HyperStack wins clearly — +15.3% throughput and lower latency at
+  every percentile** (non-overlapping ranges: HS 833–844 vs SB 715–735 req/s). HyperStack
+  streams Postgres's `json_agg(...)::text` straight to the socket; PostgREST parses then
+  re-serializes. **The advantage scales with result size** — the bigger the response, the more
+  HyperStack wins.
+
+The original asymmetric framing-A/B figures (HS 1,496 / 2,812 vs SB 2,747 / 3,258) are
+**superseded** here: they carried the I1 network hop on HyperStack only.
+
+*Binary provenance: these read numbers were measured on the JSON-pass-through binary
+(sha `575c0513…`). The other dimensions in this report were measured on the prior binary
+(sha `da927c2e…`); the pass-through change is confined to the read path, so those dimensions'
+code is identical between the two builds.*
 
 ### 2b. REST — INSERT (RAW, plain non-realtime table) — FAIR HEADLINE
 

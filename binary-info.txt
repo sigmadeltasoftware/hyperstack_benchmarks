@@ -3,8 +3,8 @@ HyperStack benchmark binary
 version:      v1.2.1
 target:       x86_64-apple-darwin (Mach-O 64-bit, Intel)
 built:        on the benchmark server (native release build)
-size_bytes:   5188408
-sha256:       da927c2e15d58b2ed67c0c79a951b9aa4ac08de8017c155de31f27f3ee92a51c
+size_bytes:   5225480
+sha256:       575c0513cc3ab42893413f9d257ba0d30613e156cac98cf48f436e9f6c0d2170
 
 NOTE: This is an x86_64-apple-darwin (Intel Mac) build. It will NOT run on
 Apple Silicon (arm64) or Linux without a rebuild from source. The benchmark

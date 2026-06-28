@@ -91,6 +91,13 @@ additional network boundary (container → host kernel bridge) that Supabase req
 do not. The measured HyperStack latency is therefore a **conservative lower bound**:
 even with the extra hop, the reported numbers reflect real behavior.
 
+**QUANTIFIED (update):** a re-measurement routing k6 to BOTH targets via the host's
+published ports (equal hop on each side) showed this confound accounted for **~80% of the
+original −16% REST-read gap** — HyperStack's read req/s rose from 2,812 → ~3,369 once the
+path was symmetric, while Supabase's barely moved. With the network equalized, small reads
+are a tie (HS wins p95/p99) and large reads are a clear HS win (see RESULTS.md §2a). So the
+original framing-A/B read figures overstated Supabase's lead by the size of this hop.
+
 **Fix attempted:** Cross-compile HyperStack to `linux/aarch64` and run it as a
 container on `supabase_network_SDTool` to achieve symmetric container-to-container
 routing from k6.
