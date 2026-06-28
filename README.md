@@ -16,7 +16,8 @@ both framings, and every confound: `RESULTS.md` / `FAIRNESS.md`.)
 
 | Dimension | HyperStack | Supabase | Result |
 |-----------|-----------:|---------:|--------|
-| REST read (req/s) | 2,812 | 3,258 | SB +16% (near-parity; HS p95 lower) |
+| REST read — small (20-row, symmetric) | 3,369 | 3,394 | tie (SB +0.7%); **HS wins p95/p99** |
+| **REST read — large (1000-row, symmetric)** | **838** | 727 | **HS +15.3%**, lower at every percentile |
 | **REST insert — RAW (req/s, plain table)** | **2,184** | 1,766 | **HS +24%** |
 | **Realtime write-tax (architectural)** | **3.7–3.85×** | **~1.00×** | HS pays for pg_notify-per-row; SB ~free (WAL) |
 | Auth sign-in (req/s) | 7.5 | 7.2 | parity (KDF-bounded) |
