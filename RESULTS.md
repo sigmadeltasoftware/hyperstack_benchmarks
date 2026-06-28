@@ -110,14 +110,14 @@ row-count assertion 100 = 100 passed on both targets). Storage uses service-role
 |-----------|-----------:|---------:|---------------|
 | REST read — small (20-row, symmetric) | 3,369 | 3,394 | tie (SB +0.7%, noise); **HS wins p95/p99** (see §2a) |
 | **REST read — large (1000-row, symmetric)** | **838** | 727 | **HS +15.3%**, lower at every percentile (see §2a) |
-| **REST insert — RAW (req/s, framing B, plain table)** | **2,184** | 1,766 | **HS +24%** — fair raw-insert headline |
-| REST insert — RAW (framing A) | 2,185 | 1,876 | HS +16% |
+| **REST insert — RAW (req/s, framing B, plain table)** | **2,176** | 1,773 | **HS +23%** — fair raw-insert headline |
+| REST insert — RAW (framing A) | 2,181 | 1,878 | HS +16% |
 | **Realtime write-tax (architectural)** | **3.7–3.85×** | **~1.00×** | see §2c — cost of HS realtime design, NOT raw insert |
 | Auth sign-in (req/s) | 7.5 | 7.2 | parity (Argon2id-bounded) |
 | Auth sign-up (req/s, framing B) | 2.6 | 7.1 | SB — HS serialises concurrent hashing |
 | Realtime delivery p50 | 10–11 ms | 258–261 ms | **HS ~24×** lower latency |
 | Realtime fanout ceiling | ≥50 subs, 0 drop | 25 subs (31% drop @ N=50) | **HS** |
-| Storage throughput (req/s) | 415–418 | 191–237 | **HS ~1.8×** |
+| Storage throughput (successful req/s) | 401–422 | 55–124 | **HS ~3.4–7.3×** (SB total req/s incl. failed uploads was 196–239 — see §2f) |
 | Storage reliability (isolated) | 5/5 pass | 0–1/5 pass | **HS** — SB upload saturates |
 | Idle RSS (minimal-prod) | 6.4 MB | 1,020 MB | **HS ~159×** smaller |
 | On-disk | 4.94 MB binary | 3,532 MB images | **HS ~715×** smaller |
@@ -169,14 +169,14 @@ realtime publication (verified: 0 triggers on HS plain tables; absent from publi
 
 | Framing | Target | Median req/s | p50 | p90 | p95 |
 |---------|--------|-------------:|----:|----:|----:|
-| A | HyperStack | **2,185** | 7.1 ms | 9.7 ms | 11.0 ms |
-| A | Supabase | 1,876 | 8.5 ms | — | 16.9 ms |
-| B | HyperStack | **2,184** | 7.1 ms | 9.7 ms | 11.0 ms |
-| B | Supabase | 1,766 | 8.7 ms | — | 17.0 ms |
+| A | HyperStack | **2,181** | 7.1 ms | 9.7 ms | 11.0 ms |
+| A | Supabase | 1,878 | 8.5 ms | — | 16.9 ms |
+| B | HyperStack | **2,176** | 7.1 ms | 9.7 ms | 11.0 ms |
+| B | Supabase | 1,773 | 8.7 ms | — | 17.0 ms |
 
-**On raw inserts, HyperStack is faster than Supabase: +16% (framing A) to +24% (framing
-B), with lower latency.** (k6 `--summary-export` emits p50/p90/p95 only; no p99 in that
-format.)
+(Median of N=5.) **On raw inserts, HyperStack is faster than Supabase: +16% (framing A) to
++23% (framing B), with lower latency.** (k6 `--summary-export` emits p50/p90/p95 only; no p99
+in that format.)
 
 > An earlier draft reported Supabase ~3× faster on inserts. That number was measured
 > against a realtime-enabled table and was the *write-tax* below — not raw insert speed.
@@ -190,10 +190,10 @@ it is in the `supabase_realtime` publication).
 
 | Framing | Target | Plain table req/s | Realtime-enabled req/s | Write-tax |
 |---------|--------|------------------:|-----------------------:|----------:|
-| A | HyperStack | 2,185 | 585 | **3.7×** |
-| A | Supabase | 1,876 | 1,873 | 1.00× |
-| B | HyperStack | 2,184 | 567 | **3.85×** |
-| B | Supabase | 1,766 | 1,750 | 1.01× |
+| A | HyperStack | 2,181 | 585 | **3.7×** |
+| A | Supabase | 1,878 | 1,873 | 1.00× |
+| B | HyperStack | 2,176 | 567 | **3.84×** |
+| B | Supabase | 1,773 | 1,750 | 1.01× |
 
 Realtime-enabled INSERT latency — HS p50 ~30.6–30.9 ms / p95 42–46 ms; SB p50 ~8.5–8.8 ms
 / p95 ~17 ms.
@@ -220,7 +220,9 @@ Node driver, `@supabase/supabase-js` over WebSockets. N=10 subscribers, 5 msg/s,
 | B | Supabase | 261 ms | 499 ms | 518 ms | 0% | 10 |
 
 **HyperStack delivery latency is ~24× lower at p50** (~14× at p99). Consistent across both
-framings, so it is structural, not a network artifact.
+framings, so it is structural, not a network artifact. (Drop column is the N=5 median: 0% for
+both — though one of the five Supabase framing-A runs showed ~10% drop, so Supabase delivery
+is less consistent even at N=10.)
 
 **Fanout ramp (N = 5/10/25/50 subscribers):**
 
@@ -243,7 +245,7 @@ drops 31% of events at N=50** (3,450/5,000 received). HyperStack's per-subscribe
 |----------|---------|---------:|---------:|-------:|-------:|
 | sign-in | A | 7.3 | 7.1 | 110.7 ms | 109.5 ms |
 | sign-in | B | 7.5 | 7.2 | 79.9 ms | 104.9 ms |
-| sign-up | A | 6.0 | 6.9 | 48.8 ms | 125.4 ms |
+| sign-up | A | 6.3 | 6.9 | 48.8 ms | 125.4 ms |
 | sign-up | B | 2.6 | 7.1 | 42.1 ms | 110.5 ms |
 
 **Sign-in is at parity** (both KDF-bounded; HS Argon2id vs SB bcrypt — confound C2).
@@ -257,12 +259,16 @@ Supabase storage was reset before the run: container restarted to `healthy` + be
 emptied. No other load on the box. Framing A = SB direct to storage container; B = via
 Kong.
 
-| Framing | Target | req/s | p50 | p95 | Runs passed |
-|---------|--------|------:|----:|----:|-------------|
-| A | HyperStack | **418** | 34.5 ms | 106.1 ms | **5/5** |
-| A | Supabase | 191 | 65.4 ms | 200.6 ms | 1/5 |
-| B | HyperStack | **415** | 34.1 ms | 113.9 ms | **5/5** |
-| B | Supabase | 237 | 66.0 ms | 182.1 ms | 0/5 |
+| Framing | Target | req/s (total) | success req/s | p50 | p95 | Runs passed |
+|---------|--------|--------------:|--------------:|----:|----:|-------------|
+| A | HyperStack | 422 | **422** | 34.5 ms | 106.1 ms | **5/5** |
+| A | Supabase | 196 | 124 | 65.4 ms | 200.6 ms | 1/5 |
+| B | HyperStack | 401 | **401** | 34.1 ms | 113.9 ms | **5/5** |
+| B | Supabase | 239 | 55 | 66.0 ms | 182.1 ms | 0/5 |
+
+(Medians of N=5.) **The honest throughput comparison is success-only req/s** — Supabase's
+total req/s is inflated by *failed* uploads that return faster. On successful work HyperStack
+delivers **~3.4× (A) to ~7.3× (B)** the throughput, at 100% success vs Supabase's 0–1/5 passing.
 
 **Honest degradation finding — the failure is UPLOADS only** (download success stays 100%
 on both targets across every run). Even from a fresh restart, Supabase framing-A run 1

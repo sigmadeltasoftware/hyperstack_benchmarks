@@ -18,13 +18,13 @@ both framings, and every confound: `RESULTS.md` / `FAIRNESS.md`.)
 |-----------|-----------:|---------:|--------|
 | REST read — small (20-row, symmetric) | 3,369 | 3,394 | tie (SB +0.7%); **HS wins p95/p99** |
 | **REST read — large (1000-row, symmetric)** | **838** | 727 | **HS +15.3%**, lower at every percentile |
-| **REST insert — RAW (req/s, plain table)** | **2,184** | 1,766 | **HS +24%** |
+| **REST insert — RAW (req/s, plain table)** | **2,176** | 1,773 | **HS +23%** |
 | **Realtime write-tax (architectural)** | **3.7–3.85×** | **~1.00×** | HS pays for pg_notify-per-row; SB ~free (WAL) |
 | Auth sign-in (req/s) | 7.5 | 7.2 | parity (KDF-bounded) |
 | Auth sign-up (req/s) | 2.6 | 7.1 | SB wins (HS serialises hashing) |
 | Realtime delivery p50 | 10–11 ms | 258–261 ms | **HS ~24×** lower latency |
 | Realtime fanout | ≥50 subs, 0 drop | 25 subs (31% drop @ N=50) | **HS** |
-| Storage throughput (req/s) | 415–418 | 191–237 | **HS ~1.8×** |
+| Storage throughput (successful req/s) | 401–422 | 55–124 | **HS ~3.4–7.3×** (SB total incl. failed uploads: 196–239) |
 | Storage reliability (isolated) | 5/5 pass | 0–1/5 pass | **HS** (SB upload saturates) |
 | Idle RSS (minimal-prod) | 6.4 MB | 1,020 MB | **HS ~159×** smaller |
 | Under-load RSS | 12.4 MB | 2,812 MB (full stack) | **HS ~227×** smaller |
